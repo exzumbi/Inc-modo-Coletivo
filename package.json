@@ -1,19 +1,32 @@
 {
-  "name": "incomodo-coletivo-static",
-  "version": "1.0.1",
+  "name": "meu-backstage-criativo",
+  "version": "0.1.0",
   "private": true,
-  "description": "Site estático da Incômodo Coletivo para Cloudflare Pages, sem backend",
+  "type": "module",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
+    "dev": "vite --host 127.0.0.1",
     "build": "node scripts/build.mjs",
-    "test": "node scripts/build.mjs --check-only",
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "test:worker": "node --test tests/worker-assets.test.mjs"
+    "build:test": "tsc --noEmit && vite build",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "playwright": "1.56.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
     "wrangler": "4.156.0"
   }
 }

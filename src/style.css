@@ -1,0 +1,215 @@
+:root {
+  color-scheme: light;
+}
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f8f7f2;
+  color: #242222;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.creative-logo {
+  display: block;
+  max-width: 100%;
+  width: 230px;
+  height: auto;
+}
+.creative-login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+.creative-login > section:first-child {
+  background: #b89af5;
+  padding: clamp(32px, 6vw, 96px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+.creative-login h1 {
+  font-size: clamp(38px, 6vw, 72px);
+  line-height: 1.05;
+}
+.creative-login .login-card {
+  padding: clamp(32px, 6vw, 96px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+}
+.login-card h2 {
+  font-size: 30px;
+}
+.login-card form {
+  display: grid;
+  gap: 20px;
+}
+.login-card label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.login-card input {
+  padding: 14px;
+  border: 1px solid #87807e;
+  background: #fff;
+  font: inherit;
+  min-width: 0;
+}
+.login-ghost {
+  width: 130px;
+  height: auto;
+  align-self: flex-end;
+}
+.setup-note {
+  padding: 20px;
+  background: #eee6fc;
+  line-height: 1.7;
+}
+.creative-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+.creative-tools strong {
+  margin-right: auto;
+}
+.creative-tools .button {
+  font-size: 12px;
+  padding: 10px 14px;
+}
+.creative-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 28px;
+}
+.creative-tabs a {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  font-size: 13px;
+}
+.creative-tabs .active {
+  background: #b89af5;
+  border-color: #262323;
+}
+.sidebar-note {
+  padding: 25px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #d3c9df;
+}
+.admin-sidebar .creative-logo {
+  width: 100%;
+}
+.access-message {
+  max-width: 600px;
+  margin: 10vh auto;
+  padding: 28px;
+  display: grid;
+  gap: 24px;
+}
+.success-note {
+  padding: 15px;
+  background: #e5f4e9;
+}
+.import-confirm {
+  margin-bottom: 25px;
+}
+.import-confirm .button {
+  margin: 15px 10px 0 0;
+}
+dialog button:disabled {
+  cursor: wait;
+}
+.button input {
+  position: absolute;
+}
+.private-badge {
+  white-space: nowrap;
+}
+.editor-fields .field input,
+.editor-fields .field textarea {
+  min-width: 0;
+}
+@media (max-width: 760px) {
+  .creative-login {
+    grid-template-columns: 1fr;
+  }
+  .creative-login > section:first-child {
+    padding: 25px;
+    gap: 10px;
+  }
+  .creative-login .creative-logo {
+    width: 180px;
+  }
+  .creative-login .login-ghost {
+    display: none;
+  }
+  .creative-login h1 {
+    font-size: 36px;
+  }
+  .creative-login .login-card {
+    padding: 28px;
+  }
+  .creative-tools {
+    gap: 8px;
+  }
+  .creative-tools > strong {
+    width: 100%;
+  }
+  .admin-main {
+    padding: 22px 16px;
+  }
+  .creative-tools .button {
+    font-size: 11px;
+    padding: 10px;
+  }
+  .admin-topbar > span:first-of-type {
+    font-size: 8px;
+  }
+  .editor-dialog {
+    max-width: calc(100vw - 20px);
+  }
+  .editor-dialog footer {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .editor-dialog footer > div {
+    flex-wrap: wrap;
+  }
+  .creative-tabs a {
+    font-size: 11px;
+  }
+  .sidebar-note {
+    padding: 16px;
+  }
+  .access-message {
+    margin: 5vh 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
