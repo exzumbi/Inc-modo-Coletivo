@@ -1,0 +1,13 @@
+{
+  "name": "incomodo-coletivo-static",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site estático da Incômodo Coletivo para Cloudflare Pages, sem backend",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs --check-only"
+  }
+}
