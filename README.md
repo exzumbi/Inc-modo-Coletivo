@@ -1,35 +1,47 @@
-# Incômodo Coletivo — Cloudflare Pages
+# Incômodo Coletivo — site estático no Cloudflare Workers
 
-Esta branch é **somente o site público estático**, preservando logos oficiais, vinil e animações. Não contém Next.js em produção, banco, CRM, CMS, Backstage ou credenciais. A aplicação completa continua preservada no ambiente original e em backup privado.
+URL existente: https://inc-modo-coletivo.brunamara-mkt.workers.dev
 
-## Publicar uma vez
+Branch de produção: `producao-cloudflare-pages` (nome preservado). O site continua no **Worker existente** `inc-modo-coletivo`; não é necessário criar Pages, migrar plataforma ou configurar CMS/banco.
 
-Na Cloudflare: **Workers & Pages → Create application → Pages → Connect to Git**. Se a tela abrir no fluxo de Workers, selecione a opção de criar **Pages**, não um Worker. Escolha `exzumbi/Inc-modo-Coletivo` e use:
+## Build e entrega dos arquivos
 
-| Campo                  | Valor                       |
-| ---------------------- | --------------------------- |
-| Production branch      | `producao-cloudflare-pages` |
-| Framework preset       | `None`                      |
-| Build command          | `npm run build`             |
-| Build output directory | `public`                    |
-| Root directory         | vazio (raiz do repositório) |
+`npm ci` instala as ferramentas de desenvolvimento. `npm run build` gera `public/` a partir de `site/` e verifica links, imagens, contatos e ausência de código privado. `wrangler.jsonc` configura **Workers Static Assets** para publicar **somente `./public`** na raiz do domínio. Não há script de Worker interceptando assets, servidor Node em produção ou fallback de SPA.
 
-Clique **Save and Deploy**. O plano Pages gratuito basta; não há Functions/Workers pagos ou banco. Não adicionar comandos de deploy Vercel, Next-on-Pages ou Wrangler Workers. O nome do projeto determina o endereço `*.pages.dev`; não há URL publicada presumida neste README.
+- CSS: `/assets/site.css` → `text/css`.
+- JavaScript: `/assets/public-preview.js` e `/assets/site-interactions.mjs` → JavaScript.
+- Logos e imagens: `/assets/image-*.png` → `image/png`.
+- Páginas: diretórios com `index.html`, com tratamento de barra final.
+- URLs antigas com `/Inc-modo-Coletivo/` têm redirecionamentos explícitos para arquivos/páginas conhecidos da raiz. O HTML novo não depende desse prefixo.
+- Arquivos inexistentes e rotas antigas do admin retornam404. Não retornar a home em lugar de CSS, JavaScript ou imagens ausentes.
+- A interface usa fontes de sistema. Não há arquivo de fonte externa necessário para renderizar este layout; fontes Agrandir não foram adicionadas.
 
-A integração Git configurará atualizações automáticas desta branch. Confirmar que os deployments automáticos da branch de produção continuam habilitados em Settings → Builds & deployments. Não mudar a branch da prévia antiga do GitHub Pages. Se já houver projeto Pages para este repositório, ajustar os mesmos campos nele e executar um novo deployment, em vez de criar um projeto duplicado.
+`npm run deploy` chama `wrangler deploy`. O próprio Wrangler executa `npm run build` antes de publicar, evitando enviar um `public/` antigo ou inexistente. O build usa por padrão o domínio Workers existente para canonical, sitemap e compartilhamento; `SITE_URL` pode substituí-lo futuramente por domínio próprio autorizado. Sem registrar ou comprar domínio automaticamente.
 
-## Como funciona
+## Configuração do deploy automático no Worker existente
 
-Os arquivos de conteúdo publicados estão em `site/`. `npm run build` verifica links/imagens/contatos e gera exclusivamente `public/`, que é enviado à Cloudflare. Não há dependências npm de produção. O Node é usado apenas durante o build, não há servidor contínuo. `.node-version` fixa a linha22 para o build.
+Na Cloudflare: **Workers & Pages → inc-modo-coletivo → Settings → Builds**. A conexão Git deve usar o repositório `exzumbi/Inc-modo-Coletivo` e a branch de produção **`producao-cloudflare-pages`**.
 
-`npm test` valida os arquivos sem gerar saída. O GitHub Actions executa a verificação a cada push ou PR desta branch; o build da Cloudflare faz a mesma verificação antes de publicar. Não precisa cadastrar tokens no GitHub para usar a integração Pages já conectada.
+| Campo                           | Valor                              |
+| ------------------------------- | ---------------------------------- |
+| Root directory / diretório raiz | raiz do repositório (vazio ou `/`) |
+| Build command                   | `npm run build`                    |
+| Deploy command                  | `npx wrangler deploy`              |
+| Production branch               | `producao-cloudflare-pages`        |
 
-`CF_PAGES_URL`, fornecido pela Cloudflare, é usado para gerar canonical, compartilhamento, robots e sitemap para o endereço estável do projeto. Ao conectar domínio próprio futuramente, definir `SITE_URL=https://incomodocoletivo.com.br` em Production e republicar. Essa configuração não compra nem conecta o domínio por conta própria. Previews e testes locais não devem ser confundidos com publicação verificada.
+Se o comando atual contiver `--assets` apontando para outra pasta, remover essa opção: o `wrangler.jsonc` é a fonte de configuração. Não usar `--assets=.` ou `--assets=site`, nem comandos Vercel/Next-on-Pages. No Workers Builds não escolher a pasta `site/` como raiz do repositório. Manter deploy automático habilitado e executar novo deployment do commit corrigido. Não criar outro Worker e não alterar o GitHub Pages anterior.
 
-Formulários foram substituídos por WhatsApp, com mensagens de serviço/parceria e e-mail oficial. Nenhum dado é enviado ou salvo neste site. Artigos demonstrativos e projeto conceitual permanecem identificados e fora do sitemap/indexação individual. A política de privacidade descreve essa versão estática. Os endereços antigos de artigos/projeto são preservados por redirecionamentos.
+## Verificação
 
-## Editar depois
+- `npm test`: valida arquivos de origem e links.
+- `npm run build`: gera os arquivos públicos.
+- `npm run test:worker`: inicia Wrangler local com a configuração real e verifica HTTP, tipos de conteúdo, igualdade de bytes dos assets, páginas, redirecionamentos, metadados e rotas inexistentes/privadas. Não se autentica nem publica na Cloudflare.
+- O GitHub Actions executa essas verificações em cada push/PR desta branch. Depois do deploy, `/release.json` informa versão1.0.1 e o commit quando fornecido por Workers Builds.
 
-Alterações em `site/` nesta branch, após commit/push, geram novo deploy automático. Não existe editor administrativo nesta fase. Para novas alterações visuais, usar PR e a prévia do Pages antes de integrar na branch de produção. Não editar `public/`: é uma pasta gerada. Não incluir `.data`, backups, anexos privados, senhas, tokens ou fontes da aplicação completa nesta branch.
+Se o HTML publicado ainda pedir `/Inc-modo-Coletivo/assets/...`, a publicação ainda é a versão antiga. Conferir a branch/commit do Worker e executar novo deploy. Publicação só está validada depois de verificar o endereço externo, imagens, MIME, vinil e celular; aprovação no GitHub sozinha não comprova isso.
 
-O build publica `_headers` de segurança, redirecionamentos e uma página404 real para não responder com a home em rotas inexistentes. A saída não permite acesso ao antigo Backstage. Mensagens no WhatsApp exigem que o visitante confirme o envio no próprio WhatsApp; o site não envia mensagens automaticamente.
+## Preservação e edição
+
+Logos, vinil, animações, conteúdo e responsividade estão em `site/`. A aplicação completa e o Backstage permanecem preservados no ambiente e em backup privado; não são incluídos nesta branch ou no Worker. Os contatos são WhatsApp e e-mail oficiais. Não há CRM, CMS, banco ou envio automático de mensagens.
+
+Edite arquivos em `site/`, não `public/`. O deploy automático do Worker usa os commits desta branch. `public/`, `node_modules/`, `.wrangler/` e arquivos `.env` não são versionados. Nunca adicionar banco, anexos privados, credenciais ou backups.

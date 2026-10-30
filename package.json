@@ -1,6 +1,6 @@
 {
   "name": "incomodo-coletivo-static",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Site estático da Incômodo Coletivo para Cloudflare Pages, sem backend",
   "engines": {
@@ -8,6 +8,12 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node scripts/build.mjs --check-only"
+    "test": "node scripts/build.mjs --check-only",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test:worker": "node --test tests/worker-assets.test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.156.0"
   }
 }

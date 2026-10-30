@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "inc-modo-coletivo",
+  "compatibility_date": "2026-10-30",
+  "workers_dev": true,
+  "build": {
+    "command": "npm run build",
+  },
+  "assets": {
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+}

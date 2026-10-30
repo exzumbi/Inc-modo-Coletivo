@@ -141,7 +141,7 @@ for (const [from, to] of Object.entries(aliases)) {
     "Broken redirect " + to,
   );
 }
-let origin = "";
+let origin = "https://inc-modo-coletivo.brunamara-mkt.workers.dev";
 if (process.env.SITE_URL || process.env.CF_PAGES_URL) {
   const custom = Boolean(process.env.SITE_URL);
   const u = new URL(process.env.SITE_URL || process.env.CF_PAGES_URL);
@@ -170,7 +170,7 @@ if (!checkOnly) {
         "__SITE_ORIGIN__",
         origin,
       );
-      // Local builds have no guessed public origin. Pages provides CF_PAGES_URL.
+      // The existing Workers hostname is the default; SITE_URL overrides it for a custom domain.
       if (!origin) html = html.replace(/<link rel="canonical"[^>]*>/g, "");
       await writeFile(dest, html);
     } else await copyFile(file, dest);
@@ -198,7 +198,22 @@ if (!checkOnly) {
   );
   await writeFile(
     join(out, "_redirects"),
-    Object.entries(aliases)
+    [
+      ...new Map([
+        ...Object.entries(aliases),
+        ["/Inc-modo-Coletivo", "/"],
+        ...pages
+          .filter((p) => p.route !== "/404.html")
+          .map((p) => ["/Inc-modo-Coletivo" + p.route, p.route]),
+        ...Object.entries(aliases).map(([from, to]) => [
+          "/Inc-modo-Coletivo" + from,
+          to,
+        ]),
+        ...[...names]
+          .filter((p) => !p.endsWith(".html") && p !== "robots.txt")
+          .map((p) => ["/Inc-modo-Coletivo/" + p, "/" + p]),
+      ]).entries(),
+    ]
       .map(([from, to]) => from + " " + to + " 301")
       .join("\n") + "\n",
   );
@@ -217,9 +232,15 @@ if (!checkOnly) {
     join(out, "release.json"),
     JSON.stringify(
       {
-        version: "1.0.0",
-        commit: process.env.CF_PAGES_COMMIT_SHA || null,
-        branch: process.env.CF_PAGES_BRANCH || "producao-cloudflare-pages",
+        version: "1.0.1",
+        commit:
+          process.env.WORKERS_CI_COMMIT_SHA ||
+          process.env.CF_PAGES_COMMIT_SHA ||
+          null,
+        branch:
+          process.env.WORKERS_CI_BRANCH ||
+          process.env.CF_PAGES_BRANCH ||
+          "producao-cloudflare-pages",
         builtAt: new Date().toISOString(),
       },
       null,
