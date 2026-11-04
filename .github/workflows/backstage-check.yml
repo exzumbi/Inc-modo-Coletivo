@@ -1,7 +1,7 @@
 name: Validate creative Backstage
 on:
   push:
-    branches: [backstage-criativo]
+    branches: [backstage-criativo, "finalizar-backstage-*"]
   pull_request:
     branches: [backstage-criativo]
 permissions:

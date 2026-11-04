@@ -258,3 +258,18 @@ test("snapshot import preserves all fields and IDs (private SQLite copy when sup
     await db.close();
   }
 });
+
+
+test("dedicated panel refuses a second owner even with administrative SQL", async () => {
+  const db = await database();
+  try {
+    await db.query("INSERT INTO auth.users VALUES($1)", [other]);
+    await assert.rejects(
+      db.query("INSERT INTO public.backstage_owners VALUES($1)", [other]),
+      (error) => error.code === "23505",
+    );
+    assert.equal((await db.query("SELECT count(*)::int AS n FROM public.backstage_owners")).rows[0].n, 1);
+  } finally {
+    await db.close();
+  }
+});

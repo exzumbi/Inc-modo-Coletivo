@@ -55,3 +55,21 @@ Node22+ para Vite/Workers; exportação do SQLite original requer Node24. `npm c
 - CI usa `example.supabase.co` e chave pública de teste apenas para compilar/testar. Não publica nem comprova conexão Supabase real. Nenhum dado pessoal fica em fixtures ou artefatos do repositório.
 
 Antes da entrega online: confirmar signup desabilitado, login real apenas da responsável, bloqueio de anon/outro usuário, gravação real após reabrir e em outro dispositivo, importação privada e contagens, permissões de anexos e restauração de backup. Não afirmar esses passos como concluídos enquanto não forem executados no projeto real.
+
+
+## Retomada preservada em 03/11/2026
+
+A aplicação original Next.js/SQLite e seus backups continuam privados e intocados.
+A cópia de trabalho deste painel é independente. A migração dos 36 registros foi
+regenerada de uma cópia consistente do SQLite e ensaiada localmente; não foi
+publicada nem enviada ao Supabase. O banco dedicado agora limita a autorização
+a uma única proprietária também por índice único, além das políticas RLS.
+
+`npm run verify:connection` executa somente leituras contra o projeto Supabase
+real configurado: valida Auth, cadastro público desativado e bloqueio anônimo
+das três tabelas. Não faz login, não importa dados e não comprova persistência
+ou restauração. Esses testes exigem a conexão real e a conta autorizada.
+
+O CI inclui as branches de preparação `finalizar-backstage-*`. Ele usa apenas
+fixtures sintéticas; a migração privada permanece fora do repositório e dos
+artefatos públicos. Nenhum workflow publica na Cloudflare automaticamente.

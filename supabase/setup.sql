@@ -2,6 +2,8 @@
 -- em Authentication > Users e DESABILITAR novos cadastros no painel Auth.
 BEGIN;
 CREATE TABLE IF NOT EXISTS public.backstage_owners(user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE);
+-- A dedicated personal panel permits exactly one authorized owner.
+CREATE UNIQUE INDEX IF NOT EXISTS backstage_single_owner ON public.backstage_owners ((true));
 CREATE TABLE IF NOT EXISTS public.backstage_entries(
  owner_id uuid NOT NULL DEFAULT auth.uid() REFERENCES public.backstage_owners(user_id),
  id text NOT NULL CHECK(id ~ '^([a-f0-9]{24}|[a-f0-9-]{36})$'),
